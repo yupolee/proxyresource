@@ -3,7 +3,7 @@
 #!desc= 解除Emby观看客户端限制
 #!author= Chris
 [Script]
-http-request ^https?:\/\/emby\.xxx script-path=EmbyChameleon.js,timeout = 10,args="client=&device=&deviceId=&version=",enable=true
+http-request ^https?:\/\/emby\.xxx script-path=EmbyChameleon.js, timeout = 5, tag=EmbyChameleon, args="client=&device=&deviceId=&version="
 
 [MITM]
 hostname = emby.xxx
@@ -16,7 +16,7 @@ if (!hasArgs) {$done({});};
 
 if (isRequest) {
 
-    let headers = $request.headers;
+    let headers = JSON.parse($request.headers);
     let url = $request.url;
 
     if (url.includes("emby/videos")) {
@@ -38,6 +38,7 @@ if (isRequest) {
         headers["x-emby-authorization"] = auth;
         headers["user-agent"] = $argument.client.concat("/", $argument.version);
 
-        $done({headers: headers});
+        $done({headers: JSON.stringify(headers)});
     };
+
 };
